@@ -22,14 +22,13 @@ public class LegacyFullTextIndexTest
     @Test
     public void shouldAllowIndexingAndFindingANode() throws Throwable
     {
-        // In a try-block, to make sure we close the driver after the test
-        try( Driver driver = GraphDatabase.driver( neo4j.boltURI() , Config.build().withEncryptionLevel( Config.EncryptionLevel.NONE ).toConfig() ) )
+        // In a try-block, to make sure we close the driver and session after the test
+        try(Driver driver = GraphDatabase.driver( neo4j.boltURI() , Config.build()
+                .withEncryptionLevel( Config.EncryptionLevel.NONE ).toConfig() );
+            Session session = driver.session() )
         {
-
             // Given I've started Neo4j with the FullTextIndex procedure class
             //       which my 'neo4j' rule above does.
-            Session session = driver.session();
-
             // And given I have a node in the database
             long nodeId = session.run( "CREATE (p:User {name:'Brookreson'}) RETURN id(p)" )
                     .single()
