@@ -12,7 +12,7 @@
   <description>A template project for building a Neo4j Procedure</description>
 
   <properties>
-    <neo4j.version>3.0.6</neo4j.version>
+    <neo4j.version>3.1.0-BETA1</neo4j.version>
   </properties>
 
   <dependencies>
