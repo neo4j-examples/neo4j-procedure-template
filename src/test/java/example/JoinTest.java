@@ -22,7 +22,7 @@ public class JoinTest
             .withFunction( Join.class );
 
     @Test
-    public void shouldAllowIndexingAndFindingANode() throws Throwable
+    public void shouldReturnJoinedValues() throws Throwable
     {
         // This is in a try-block, to make sure we close the driver after the test
         try( Driver driver = GraphDatabase
