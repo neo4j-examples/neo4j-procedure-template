@@ -1,5 +1,5 @@
 = Neo4j Procedure Template
-:branch: 3.4
+:branch: 3.5
 :root: https://github.com/neo4j-examples/neo4j-procedure-template/blob/{branch}/src
 
 This project is an example you can use to build user defined procedures, functions and aggregation functions in Neo4j.
