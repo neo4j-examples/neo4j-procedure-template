@@ -5,12 +5,11 @@ import org.neo4j.procedure.*;
 /**
  * This is an example how you can create a simple user-defined function for Neo4j.
  */
-public class Last
-{
+public class Last {
+
     @UserAggregationFunction("example.last")
     @Description("example.last(value) - returns last non-null row")
-    public LastFunction last() 
-    {
+    public LastFunction last() {
         return new LastFunction();
     }
 
@@ -20,18 +19,15 @@ public class Last
         private Object lastValue;
 
         @UserAggregationUpdate
-        public void aggregate(@Name("value") Object value) 
-        {
-            if (value != null) 
-            {
-	            this.lastValue = value;
+        public void aggregate(@Name("value") Object value) {
+            if (value != null) {
+                this.lastValue = value;
             }
         }
 
         @UserAggregationResult
-        public Object result() 
-        {
-	        return lastValue;
+        public Object result() {
+            return lastValue;
         }
     }
 }

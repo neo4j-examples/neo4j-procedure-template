@@ -1,31 +1,36 @@
 package example;
 
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.neo4j.driver.v1.*;
-import org.neo4j.graphdb.factory.GraphDatabaseSettings;
-import org.neo4j.harness.junit.Neo4jRule;
+import org.neo4j.harness.ServerControls;
+import org.neo4j.harness.TestServerBuilders;
 
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.neo4j.driver.v1.Values.parameters;
 
-public class LegacyFullTextIndexTest
-{
-    // This rule starts a Neo4j instance for us
-    @Rule
-    public Neo4jRule neo4j = new Neo4jRule()
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public class LegacyFullTextIndexTest {
 
-            // This is the Procedure we want to test
-            .withProcedure( FullTextIndex.class );
+    private static final Config driverConfig = Config.build().withoutEncryption().toConfig();
+    private ServerControls embeddedDatabaseServer;
+
+    @BeforeAll
+    void initializeNeo4j() {
+
+        this.embeddedDatabaseServer = TestServerBuilders
+                .newInProcessBuilder()
+                .withProcedure(FullTextIndex.class)
+                .newServer();
+    }
 
     @Test
-    public void shouldAllowIndexingAndFindingANode() throws Throwable
-    {
+    public void shouldAllowIndexingAndFindingANode() {
+
         // In a try-block, to make sure we close the driver and session after the test
-        try(Driver driver = GraphDatabase.driver( neo4j.boltURI() , Config.build()
-                .withEncryptionLevel( Config.EncryptionLevel.NONE ).toConfig() );
-            Session session = driver.session() )
+        try(Driver driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI(), driverConfig);
+            Session session = driver.session())
         {
             // Given I've started Neo4j with the FullTextIndex procedure class
             //       which my 'neo4j' rule above does.
@@ -39,7 +44,7 @@ public class LegacyFullTextIndexTest
 
             // Then I can search for that node with lucene query syntax
             StatementResult result = session.run( "CALL example.search('User', 'name:Brook*')" );
-            assertThat( result.single().get( "nodeId" ).asLong(), equalTo( nodeId ) );
+            assertThat(result.single().get( "nodeId" ).asLong()).isEqualTo( nodeId );
         }
     }
 }
