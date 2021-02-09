@@ -20,10 +20,16 @@ class TraverseDemoTest {
 
     @BeforeAll
     void initializeNeo4j() {
+        var sw = new StringWriter();
+        try (var in = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/movie.cypher")))) {
+            in.transferTo(sw);
+            sw.flush();
+        }
+
         this.embeddedDatabaseServer = Neo4jBuilders.newInProcessBuilder()
-                .withProcedure(TraverseDemo.class)
-                .withFixture(new File(getClass().getResource("/movie.cypher").getPath()))
-                .build();
+            .withProcedure(TraverseDemo.class)
+            .withFixture(sw.toString())
+            .build();
     }
 
     @Test
