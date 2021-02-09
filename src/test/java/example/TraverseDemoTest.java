@@ -33,7 +33,7 @@ class TraverseDemoTest {
                 Driver driver = GraphDatabase.driver(embeddedDatabaseServer.boltURI(), driverConfig);
                 Session session = driver.session()) {
 
-            List<String> names = session.run("match (keanu:Person {name:'Keanu Reeves'})-[*1..2]-(coactors:Person)\n" +
+            var names = session.run("match (keanu:Person {name:'Keanu Reeves'})-[*1..2]-(coactors:Person)\n" +
                     "with coactors.name as names order by names\n" +
                     "return distinct names").stream()
                     .map(r -> r.get("names"))
